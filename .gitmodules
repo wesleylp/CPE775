@@ -1,0 +1,3 @@
+[submodule "lib/s3fd"]
+	path = lib/s3fd
+	url = git@github.com:clcarwin/SFD_pytorch.git

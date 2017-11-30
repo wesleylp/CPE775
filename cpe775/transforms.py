@@ -1,5 +1,5 @@
 import numpy as np
-
+import torch
 import cpe775.utils.img_utils as utils
 
 from PIL import Image
@@ -189,3 +189,33 @@ class Resize(transforms.Resize):
         image, landmarks = sample['image'], sample['landmarks']
 
         return {'image': super(Resize, self).__call__(image), 'landmarks': landmarks}
+
+class ToTensor(object):
+    """Convert a ``PIL Imag Image to be converted to tensore`` or ``numpy.ndarray`` to tensor.
+    Converts a PIL Image or numpy.ndarray (H x W x C) in the range
+    [0, 255] to a torch.FloatTensor of shape (C x H x W) in the range [0.0, 1.0].
+    """
+
+    def __call__(self, sample):
+        """
+        Args:
+            sample (dict): `image`  (PIL Image or numpy.ndarray), is the image to be converted to tensor, and `landmarks` containing an 2D array
+        Returns:
+            Tensor: Converted image.
+        """
+        image, landmarks = sample['image'], sample['landmarks']
+        return {'image': F.to_tensor(image), 'landmarks': torch.from_numpy(landmarks)}
+
+class ToGray(object):
+    """Convert a ``PIL Imag Image to be converted to tensore`` or ``numpy.ndarray`` in RGB scale to Gray Scale.
+    """
+
+    def __call__(self, sample):
+        """
+        Args:
+            sample (dict): `image`  (PIL Image or numpy.ndarray), is the image to be converted to tensor, and `landmarks` containing an 2D array
+        Returns:
+            Tensor: Converted image.
+        """
+        image, landmarks = sample['image'], sample['landmarks']
+        return {'image': image.convert('L'), 'landmarks': landmarks}

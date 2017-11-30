@@ -29,7 +29,7 @@ class FaceLandmarksDataset(Dataset):
         img_name = os.path.join(self.root_dir, self.data_df.ix[idx, 0])
         image = self.loader(img_name)
 
-        landmarks = self.data_df.ix[idx, 1:].as_matrix().astype('float')
+        landmarks = self.data_df.ix[idx, 1:].as_matrix().astype('float32')
         landmarks = landmarks.reshape(-1, 2)
 
         sample = {'image': image, 'landmarks': landmarks}

@@ -1,6 +1,8 @@
-from skimage import io
 import matplotlib.pyplot as plt
 import numpy as np
+from skimage import io
+
+from torchvision import utils
 
 
 def show_landmarks(image, landmarks):
@@ -14,6 +16,30 @@ def show_landmarks(image, landmarks):
 
     plt.scatter(landmarks[:, 0], landmarks[:, 1], s=10, marker='.', c='r')
     plt.pause(0.001)  # pause a bit so that plots are updated
+
+# Helper function to show a batch
+def show_landmarks_batch(sample_batched, normalized=True, nrow=8, padding=2):
+    """Show image with landmarks for a batch of samples."""
+    images_batch, landmarks_batch = \
+            sample_batched['image'], sample_batched['landmarks']
+    batch_size = len(images_batch)
+    im_size = images_batch.size(2)
+
+    grid = utils.make_grid(images_batch, nrow, padding)
+    plt.imshow(grid.numpy().transpose((1, 2, 0)))
+
+    ncol = np.ceil(batch_size/nrow).astype('int')
+
+    for j in range(ncol):
+        for i in range(nrow):
+            if i+ j*nrow >= len(landmarks_batch):
+                continue
+
+            plt.scatter(landmarks_batch[i+ j*nrow, :, 0].numpy()*im_size + i * im_size + padding*i,
+                        landmarks_batch[i+j*nrow, :, 1].numpy()*im_size + j * im_size + padding*j,
+                        s=10, marker='.', c='r')
+
+        plt.title('Batch from dataloader')
 
 def get_bbox(x1, y1, x2, y2):
     """ Extracts a square bound box given the coordinates

@@ -5,16 +5,20 @@ from skimage import io
 from torchvision import utils
 
 
-def show_landmarks(image, landmarks):
+def show_landmarks(image, landmarks, normalized=False):
     """Show image with landmarks"""
 
     if isinstance(image, str):
         image = io.imread(image)
 
+    w = h = 1
+    if normalized:
+        w, h = image.size
+
     plt.figure()
     plt.imshow(image)
 
-    plt.scatter(landmarks[:, 0], landmarks[:, 1], s=10, marker='.', c='r')
+    plt.scatter(landmarks[:, 0]*w, landmarks[:, 1]*h, s=10, marker='.', c='r')
     plt.pause(0.001)  # pause a bit so that plots are updated
 
 # Helper function to show a batch

@@ -1,11 +1,12 @@
+import random
+
 import numpy as np
 import torch
-import cpe775.utils.img_utils as utils
-
 from PIL import Image
 
-from torchvision.transforms import transforms
+import cpe775.utils.img_utils as utils
 import torchvision.transforms.functional as F
+from torchvision.transforms import transforms
 
 
 class CropFace(object):
@@ -219,3 +220,37 @@ class ToGray(object):
         """
         image, landmarks = sample['image'], sample['landmarks']
         return {'image': image.convert('L'), 'landmarks': landmarks}
+
+
+class RandomHorizontalFlip(transforms.RandomHorizontalFlip):
+    """Horizontally flip the given PIL Image randomly with a probability of 0.5."""
+
+    _horizontal_flip_indexes = np.array([
+        [1,2,3,4,5,6,7,8,18,19,20,21,22,37,38,39,40,41,42,32,33,49,50,51,61,62,68,60,59],
+        [17,16,15,14,13,12,11,10,27,26,25,24,23,46,45,44,43,48,47,36,35,55,54,53,65,64,66,56,57]
+    ]) - 1
+
+    def __call__(self, sample):
+        """
+        Args:
+            sample: a dict containing the `image` (PIL image) and the normalized landmarks between [0, 1].
+        Returns:
+            dict: Randomly flipped image and landmarks
+        """
+        image, landmarks = sample['image'], sample['landmarks']
+
+        if random.random() < 0.5:
+
+            if landmarks.max() > 1 or landmarks.min() < 0:
+                raise ValueError('landmarks points must be between [0,1]')
+
+            # Horizontal flip of all x coordinates:
+            landmarks = landmarks.copy()
+            landmarks[..., 0] = landmarks[..., 0]*-1 + 1.
+
+            flipped_landmarks = landmarks.copy()
+
+            flipped_landmarks[..., self._horizontal_flip_indexes[0], :] = landmarks[..., self._horizontal_flip_indexes[1], :]
+            flipped_landmarks[..., self._horizontal_flip_indexes[1], :] = landmarks[..., self._horizontal_flip_indexes[0], :]
+            return {'image': F.hflip(image), 'landmarks': flipped_landmarks}
+        return sample

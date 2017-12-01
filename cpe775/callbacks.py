@@ -206,13 +206,8 @@ class LearningRateScheduler(Callback):
     def __init__(self, scheduler):
         self.scheduler = scheduler
 
-    def on_begin(self, start_epoch=None, end_epoch=None, metrics_name=None):
-        self.lr = self.optimizer.param_groups[0]['lr']
-
     def on_epoch_begin(self, epoch):
-        new_lr = self.scheduler(self.lr, epoch)
-        for param_group in self.optimizer.param_groups:
-            param_group['lr'] = new_lr
+        self.scheduler.step()
 
 
 class Visdom(Callback):

@@ -131,6 +131,14 @@ class Model(object):
 
         return outputs
 
+    def predict(self, images):
+        self.net.eval()
+        input = torch.autograd.Variable(torch.from_numpy(images).float(), volatile=True)
+
+        output = self.net(input)
+
+        return output.data.cpu().numpy()
+
     def _step_loader(self, loader, callback, metrics={}, mode='train',
                      async=True):
 

@@ -120,6 +120,33 @@ class CropFace(object):
 
         return expand_img, expanded_rect, x_extra_start, y_extra_start
 
+class CenterCrop(transforms.CenterCrop):
+    """Crops the given PIL Image at the center.
+    Args:
+        size (sequence or int): Desired output size of the crop. If size is an
+            int instead of sequence like (h, w), a square crop (size, size) is
+            made.
+    """
+
+    def __call__(self, sample):
+        """
+        Args:
+            sample (dict): image (PIL Image) to be cropped and landmarks to be centered.
+        Returns:
+            sample (dict)
+        """
+        image, landmarks = sample['image'], sample['landmarks']
+
+        w, h = image.size
+        th, tw = self.size
+        i = int(round((h - th) / 2.))
+        j = int(round((w - tw) / 2.))
+
+        landmarks -= [j/w, i/h]
+        landmarks *= [w/tw, h/th]
+
+        return {'image': F.center_crop(image, self.size), 'landmarks': landmarks}
+
 class RandomCrop(transforms.RandomCrop):
     """ Crop the given PIL Image at a random location.
     Args:
@@ -141,25 +168,32 @@ class RandomCrop(transforms.RandomCrop):
         """
         image, landmarks = sample['image'], sample['landmarks']
 
+        orig_w, orig_h = image.size
+
         if self.padding > 0:
             image = F.pad(image, self.padding)
 
             left = top = right = bottom = 0
 
-
-            if len(self.padding) == 2:
+            if type(self.padding) == int:
+                left = top = right = bottom = self.padding
+            elif len(self.padding) == 2:
                 left, top = self.padding
                 right = left
                 bottom = left
             elif len(self.padding) == 4:
                 left, top, right, bottom = self.padding
 
-            landmarks[:, 0] += left
-            landmarks[:, 1] += top
+            landmarks[:, 0] += left/orig_w
+            landmarks[:, 1] += top/orig_h
 
+        # i: upper pixel coordinate
+        # j: left pixel coordinate
         i, j, h, w = self.get_params(image, self.size)
 
-        landmarks = landmarks - [j/w, i/h]
+        landmarks -= [j/orig_w, i/orig_h]
+
+        landmarks *= [orig_w/w, orig_h/h]
 
         image = F.crop(image, i, j, h, w)
 
@@ -254,3 +288,31 @@ class RandomHorizontalFlip(transforms.RandomHorizontalFlip):
             flipped_landmarks[..., self._horizontal_flip_indexes[1], :] = landmarks[..., self._horizontal_flip_indexes[0], :]
             return {'image': F.hflip(image), 'landmarks': flipped_landmarks}
         return sample
+
+
+class ToPILImage(transforms.ToPILImage):
+    """Convert a tensor or an ndarray to PIL Image.
+    Converts a torch.*Tensor of shape C x H x W or a numpy ndarray of shape
+    H x W x C to a PIL Image while preserving the value range.
+    Args:
+        mode (`PIL.Image mode`_): color space and pixel depth of input data (optional).
+            If ``mode`` is ``None`` (default) there are some assumptions made about the input data:
+            1. If the input has 3 channels, the ``mode`` is assumed to be ``RGB``.
+            2. If the input has 4 channels, the ``mode`` is assumed to be ``RGBA``.
+            3. If the input has 1 channel, the ``mode`` is determined by the data type (i,e,
+            ``int``, ``float``, ``short``).
+    .. _PIL.Image mode: http://pillow.readthedocs.io/en/3.4.x/handbook/concepts.html#modes
+    """
+    def __init__(self, mode=None):
+        self.mode = mode
+
+    def __call__(self, sample):
+        """
+        Args:
+            sample (dict): contains image (Tensor or numpy.ndarray) and landmarks (Tensor or numpy.ndarray)
+        Returns:
+            sample (dict): image converted to PIL Image and landmarks
+        """
+        image, landmarks = sample['image'], sample['landmarks']
+        return {'image': F.to_pil_image(image, self.mode),
+                'landmarks': landmarks}

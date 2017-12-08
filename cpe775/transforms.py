@@ -8,7 +8,6 @@ import cpe775.utils.img_utils as utils
 import torchvision.transforms.functional as F
 from torchvision.transforms import transforms
 
-
 class CropFace(object):
     def __init__(self, size=256, enlarge_ratio=1.7):
         self._enlarge_ratio = enlarge_ratio
@@ -39,7 +38,7 @@ class CropFace(object):
         assert y_end > y_max, "y_end %s is not bigger than y_max %s" %(y_end, y_max)
 
         # Padding image in order to fix the bbox
-        image, rect, x_extra_start, y_extra_start = self._increase_img_size(image, rect)
+        image, rect, x_extra_start, y_extra_start = utils.increase_img_size(image, rect)
 
         x_start, y_start, width, height = rect
 
@@ -65,60 +64,6 @@ class CropFace(object):
         landmarks[:, 1] /= height
 
         return {'image': image, 'landmarks': landmarks}
-
-    def _increase_img_size(self, img, bbox):
-        """ this method increases the bounding box size
-        if start and end values for the bounding box
-        go beyond the image size (from either side)
-        and in such a case gets the ratio of padded region
-        to the total image size (total_img_size = orig_size + pad)
-        """
-
-        x_start, y_start, width_bbox, height_bbox = bbox
-        x_end = x_start + width_bbox
-        y_end = y_start + height_bbox
-
-        width, height = img.size
-
-        x_extra_start = 0
-        x_extra_end = 0
-        y_extra_start = 0
-        y_extra_end = 0
-
-        if x_start < 0:
-            x_extra_start = - x_start
-        if x_end > width:
-            x_extra_end = x_end - width
-        if y_start < 0:
-            y_extra_start = - y_start
-        if y_end > height:
-            y_extra_end = y_end - height
-
-        expand_img = F.pad(img, (x_extra_start, y_extra_start,
-                                 x_extra_end, y_extra_end))
-
-        # checking bounding box size after image padding
-        width, height = expand_img.size
-
-        if x_extra_start:
-            x_start = 0
-            x_end += x_extra_start
-        if y_extra_start:
-            y_start = 0
-            y_end += y_extra_start
-        if x_extra_end:
-            x_end = width
-        if y_extra_end:
-            y_end = height
-
-        bbox_width = x_end - x_start
-        bbox_height = y_end - y_start
-
-        assert bbox_width == bbox_height
-
-        expanded_rect = [x_start, y_start, bbox_width, bbox_height]
-
-        return expand_img, expanded_rect, x_extra_start, y_extra_start
 
 class CenterCrop(transforms.CenterCrop):
     """Crops the given PIL Image at the center.

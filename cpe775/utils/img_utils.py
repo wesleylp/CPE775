@@ -1,8 +1,10 @@
 import matplotlib.pyplot as plt
 import numpy as np
+from PIL import Image
 from skimage import io
-
 from torchvision import utils
+
+import cv2
 
 
 def show_landmarks(image, landmarks, normalized=False):
@@ -112,3 +114,79 @@ def enlarge_bbox(bbox, ratio=1.25):
     rect_init_square = [x_start_new, y_start_new, width, height]
 
     return rect_init_square
+
+def increase_img_size(img, bbox):
+        """ this method increases the bounding box size
+        if start and end values for the bounding box
+        go beyond the image size (from either side)
+        and in such a case gets the ratio of padded region
+        to the total image size (total_img_size = orig_size + pad)
+        """
+
+        x_start, y_start, width_bbox, height_bbox = bbox
+        x_end = x_start + width_bbox
+        y_end = y_start + height_bbox
+
+        if type(img) == Image.Image:
+            width, height = img.size
+        else:
+            height, width = img.shape[:2]
+
+        x_extra_start = 0
+        x_extra_end = 0
+        y_extra_start = 0
+        y_extra_end = 0
+
+        if x_start < 0:
+            x_extra_start = - x_start
+        if x_end > width:
+            x_extra_end = x_end - width
+        if y_start < 0:
+            y_extra_start = - y_start
+        if y_end > height:
+            y_extra_end = y_end - height
+
+        # checking bounding box size after image padding
+        if type(img) == Image.Image:
+            expand_img = F.pad(img, (x_extra_start, y_extra_start,
+                                 x_extra_end, y_extra_end))
+            width, height = expand_img.size
+        else:
+            expand_img = cv2.copyMakeBorder(img,y_extra_start,y_extra_end,
+                                    x_extra_start,x_extra_end,
+                                    cv2.BORDER_CONSTANT,value=[0,0,0])
+            height, width = expand_img.shape[:2]
+
+        if x_extra_start:
+            x_start = 0
+            x_end += x_extra_start
+        if y_extra_start:
+            y_start = 0
+            y_end += y_extra_start
+        if x_extra_end:
+            x_end = width
+        if y_extra_end:
+            y_end = height
+
+        bbox_width = x_end - x_start
+        bbox_height = y_end - y_start
+
+        assert bbox_width == bbox_height
+
+        expanded_rect = [x_start, y_start, bbox_width, bbox_height]
+
+        return expand_img, expanded_rect, x_extra_start, y_extra_start
+
+def rect_to_tuple(rect, padding=0):
+    return (int(rect.left()) - padding,
+            int(rect.top()) - padding,
+            int(rect.right()) + padding,
+            int(rect.bottom() + padding))
+
+def padding_rect(rect, padding):
+    if type(padding) == int and len(padding) == 1:
+        padding = (padding, padding)
+    if len(padding) == 2:
+        padding = (padding[0], padding[1], padding[0], padding[1])
+
+    return (rect[0] - padding, rect[1] - padding, rect[2] + padding, rect[3] + padding)

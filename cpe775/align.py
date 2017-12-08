@@ -1,3 +1,7 @@
+''' Code based on
+https://github.com/cmusatyalab/openface
+'''
+
 import numpy as np
 import cv2
 

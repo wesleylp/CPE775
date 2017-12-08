@@ -1,3 +1,6 @@
+''' Code based on
+ https://github.com/thnkim/OpenFacePytorch
+'''
 import os
 import sys
 import time
@@ -8,18 +11,24 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
+
 class LRN(nn.Module):
-    def __init__(self, local_size, alpha=1e-4, k=1, beta=0.75, ACROSS_CHANNELS=False):
+    ''' Local Response Normalization
+    based on: https://github.com/pytorch/pytorch/issues/653
+
+    Compared with the keras' implementation
+    '''
+    def __init__(self, size, alpha=1e-4, k=1, beta=0.75, across_channels=False):
         super(LRN, self).__init__()
-        self.ACROSS_CHANNELS = ACROSS_CHANNELS
-        if self.ACROSS_CHANNELS:
-            self.average=nn.AvgPool3d(kernel_size=(local_size, 1, 1),
+        self.across_channels = across_channels
+        if self.across_channels:
+            self.average=nn.AvgPool3d(kernel_size=(size, 1, 1),
                     stride=1,
-                    padding=(int((local_size-1.0)/2), 0, 0))
+                    padding=(int((size-1.0)/2), 0, 0))
         else:
-            self.average=nn.AvgPool2d(kernel_size=local_size,
+            self.average=nn.AvgPool2d(kernel_size=size,
                     stride=1,
-                    padding=int((local_size-1.0)/2))
+                    padding=int((size-1.0)/2))
         self.alpha = alpha
         self.beta = beta
         self.k = k

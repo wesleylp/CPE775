@@ -1,0 +1,21 @@
+channels:
+  - defaults
+  - conda-forge
+  - pytorch
+dependencies:
+  - python==3.5
+  - numpy
+  - scipy
+  - scikit-learn
+  - scikit-image
+  - pillow
+  - matplotlib
+  - dlib
+  - h5py
+  - pandas
+  - pytorch
+  - torchvision
+  - opencv
+  - pip:
+    - inflection
+    - dlib

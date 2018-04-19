@@ -19,36 +19,39 @@ class CropFace(object):
         # Extracting the bbox
         bbox = utils.get_bbox_from_landmarks(landmarks)
 
-        # Expanding bbox, giving a margin
-        rect = utils.enlarge_bbox(bbox, ratio=self._enlarge_ratio)
+        x_start, y_start, width, height = bbox
 
-        # Verifying the boundaries
-        x_min = np.min(landmarks[:, 0])
-        y_min = np.min(landmarks[:, 1])
-        x_max = np.max(landmarks[:, 0])
-        y_max = np.max(landmarks[:, 1])
+        if self._enlarge_ratio > 1.0:
+            # Expanding bbox, giving a margin
+            rect = utils.enlarge_bbox(bbox, ratio=self._enlarge_ratio)
 
-        x_start, y_start, width, height = rect
-        x_end = x_start + width
-        y_end = y_start + height
+            # Verifying the boundaries
+            x_min = np.min(landmarks[:, 0])
+            y_min = np.min(landmarks[:, 1])
+            x_max = np.max(landmarks[:, 0])
+            y_max = np.max(landmarks[:, 1])
 
-        assert x_start < x_min, "x_start %s is not smaller than x_min %s" %(x_start, x_min)
-        assert x_end > x_max, "x_end %s is not bigger than x_max %s" %(x_end, x_max)
-        assert y_start < y_min, "y_start %s is not smaller than y_min %s" %(y_start, y_min)
-        assert y_end > y_max, "y_end %s is not bigger than y_max %s" %(y_end, y_max)
+            x_start, y_start, width, height = rect
+            x_end = x_start + width
+            y_end = y_start + height
 
-        # Padding image in order to fix the bbox
-        image, rect, x_extra_start, y_extra_start = utils.increase_img_size(image, rect)
+            assert x_start < x_min, "x_start %s is not smaller than x_min %s" %(x_start, x_min)
+            assert x_end > x_max, "x_end %s is not bigger than x_max %s" %(x_end, x_max)
+            assert y_start < y_min, "y_start %s is not smaller than y_min %s" %(y_start, y_min)
+            assert y_end > y_max, "y_end %s is not bigger than y_max %s" %(y_end, y_max)
 
-        x_start, y_start, width, height = rect
+            # Padding image in order to fix the bbox
+            image, rect, x_extra_start, y_extra_start = utils.increase_img_size(image, rect)
 
-        x_end = x_start + width
-        y_end = y_start + height
+            x_start, y_start, width, height = rect
 
-        if x_extra_start:
-            landmarks[:,0] += x_extra_start
-        if y_extra_start:
-            landmarks[:,1] += y_extra_start
+            x_end = x_start + width
+            y_end = y_start + height
+
+            if x_extra_start:
+                landmarks[:,0] += x_extra_start
+            if y_extra_start:
+                landmarks[:,1] += y_extra_start
 
         # Cropping the image around the bbox
         image = F.crop(image, y_start, x_start, height, width)

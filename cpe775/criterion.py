@@ -4,6 +4,38 @@ from torch.nn.modules.module import Module
 
 import numpy as np
 
+class NMSELoss(Module):
+
+    eye_dist = {
+        'outer_eyes_distance': [[36], [45]],
+        'pupil_distance': [range(36, 42), range(42, 48)]
+    }
+
+    def __init__(self, eps=1e-9, norm='pupil_distance', weight=1):
+        super(NMSELoss, self).__init__()
+        self.eps = eps
+        self.norm = norm
+        self.weight = weight
+
+        if self.norm not in self.eye_dist:
+            raise ValueError('norm {} not allowed'.format(norm))
+
+    def forward(self, input, target):
+        dio = self._get_eye_dist(target)
+
+        distances = (target.view(-1, 136) - input.view(-1, 136)).norm(p=2, dim=-1)**2
+        return self.weight*torch.mean(distances/dio/68)
+
+    def _get_eye_dist(self, target):
+        if self.norm is None:
+            return 1
+
+        left_eye = target[..., self.eye_dist[self.norm][0], :].mean(dim=-2)
+        right_eye = target[..., self.eye_dist[self.norm][1], :].mean(dim=-2)
+
+
+        return (left_eye - right_eye).norm(p=2, dim=-1)
+
 class NRMSELoss(Module):
 
     eye_dist = {

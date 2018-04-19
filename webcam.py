@@ -42,6 +42,10 @@ if __name__ == '__main__':
 
     video_capture = cv2.VideoCapture(args.video_capture)
 
+    fps = video_capture.get(cv2.CAP_PROP_FPS)
+
+    print('Frames per second using video.get(cv2.CAP_PROP_FPS: {}'.format(fps))
+
     # Define the codec and create VideoWriter object
     if args.record:
         fourcc = cv2.VideoWriter_fourcc(*'X264')
@@ -53,6 +57,8 @@ if __name__ == '__main__':
     face_landmarks = []
     face_probas = []
     process_this_frame = True
+    frame_count = 0
+    global_start = time.time()
     while True:
         # Grab a single frame of video
         ret, frame = video_capture.read()
@@ -126,11 +132,14 @@ if __name__ == '__main__':
             out.write(frame)
         # Display the resulting image
         cv2.imshow('Video', frame)
+ 
+        frame_count += 1
 
         # Hit 'q' on the keyboard to quit!
         if cv2.waitKey(1) & 0xFF == ord('q'):
             break
 
+    print('Estimated fps: {}'.format(frame_count/(time.time()-global_start)))
     # Release handle to the webcam
     video_capture.release()
     cv2.destroyAllWindows()

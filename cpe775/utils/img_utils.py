@@ -3,6 +3,7 @@ import numpy as np
 from PIL import Image
 from skimage import io
 from torchvision import utils
+import torchvision.transforms.functional as F
 
 import cv2
 
@@ -88,6 +89,9 @@ def get_bbox_from_landmarks(landmarks):
     return get_bbox(x_min, y_min, x_max, y_max)
 
 def enlarge_bbox(bbox, ratio=1.25):
+    if ratio <= 1.0:
+        return bbox
+    
     x_start, y_start, width, height = bbox
 
     x_end = x_start + width

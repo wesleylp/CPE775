@@ -35,7 +35,7 @@ class LRN(nn.Module):
 
 
     def forward(self, x):
-        if self.ACROSS_CHANNELS:
+        if self.across_channels:
             div = x.pow(2).unsqueeze(1)
             div = self.average(div).squeeze(1)
             div = div.mul(self.alpha).add(self.k).pow(self.beta)
@@ -190,6 +190,6 @@ class OpenFace(nn.Module):
 
         x = self.layer25(x)
 
-        x /= x.norm(p=2, dim=-1).expand_as(x)
+        x /= x.norm(p=2, dim=-1, keepdim=True)
 
         return x

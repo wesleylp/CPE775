@@ -12,7 +12,7 @@ Besides, it is capable to run in real-time using a webcam.
 ## The System
 
 ### Face Detection
-This work uses a Histogram of Oriented Gradient (HOG) based method, the Max-Margin Object Detection (MMOD), implemented by using [dlib] (http://dlib.net/) library. 
+This work uses a Histogram of Oriented Gradient (HOG) based method, the Max-Margin Object Detection (MMOD), implemented by using [dlib](http://dlib.net/) library. 
 The segmented face is delivered to the facial feature (landmarks) extraction step.
 
 ### Landmarks Extraction
@@ -24,7 +24,7 @@ To do so, we use two functions from OpenCV library: `getAffineTransform`, that r
 
 ### Embedding
 A network is trained to minimize the so-called
-[triplet loss] (https://ieeexplore.ieee.org/document/7298682/) – at each iteration, the network is fed with three images: two distinct images of the same person and an image of a different person.
+[triplet loss](https://ieeexplore.ieee.org/document/7298682/) – at each iteration, the network is fed with three images: two distinct images of the same person and an image of a different person.
 
 ### Classification
 The last step is greatly simplified.
@@ -36,7 +36,7 @@ The SVM was chosen since it is fast for both training and inference.
 
 ### Requirements
 * Linux (might work with other Operational Systems, but it was not tested).
-* [Conda] (https://conda.io/docs/user-guide/install/index.html): package, dependency and environment management.
+* [Conda](https://conda.io/docs/user-guide/install/index.html): package, dependency and environment management.
 
 ### Guide
 

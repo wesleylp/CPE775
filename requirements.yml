@@ -1,9 +1,10 @@
+name: face
 channels:
   - defaults
   - conda-forge
   - pytorch
 dependencies:
-  - python==3.5
+  - python==3.5.4
   - numpy
   - scipy
   - scikit-learn

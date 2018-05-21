@@ -42,8 +42,8 @@ The SVM was chosen since it is fast for both training and inference.
 
 1. Open the terminal;
 2. Download the source code by running the following command:
-`wget https://github.com/wesleylp/CPE775/archive/v1.0.tar.gz`;
-3. Extract the contents and then go inside the folder by typing `cd CPE775-1.0`;
+`git clone https://github.com/wesleylp/CPE775`;
+3. Go inside the folder by typing `cd CPE775`;
 4. Create the `face` virtual environment by running 
 the following command `conda env create -f requirements.yml`;
 5. Activate your environment by typing `source activate face`;

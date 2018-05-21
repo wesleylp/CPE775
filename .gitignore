@@ -416,3 +416,9 @@ $RECYCLE.BIN/
 
 # Custom
 data/**/*
+models/**/*
+results/**/*
+#symlink
+data
+models
+results

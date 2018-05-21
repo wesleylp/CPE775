@@ -38,7 +38,7 @@ if __name__ == '__main__':
     net = resnet18(in_shape=(-1, 1, 224, 224), out_shape=(-1, 68, 2))
     landmarks_detector = LandmarksDetector(net, 'models/landmarks_detector.pth', cuda=args.cuda)
     # loading face classification model
-    classify = FaceClassify('models/face_classification_svm.pkl')
+    classify = FaceClassify('models/face_classification_svm-application.pkl')
 
     video_capture = cv2.VideoCapture(args.video_capture)
 
@@ -125,14 +125,14 @@ if __name__ == '__main__':
             # loop over the (x, y)-coordinates for the facial landmarks and draw them on the image
             for (x, y) in landmarks:
                 cv2.circle(frame, (int(x/args.scale), int(y/args.scale)), 1, (0, 0, 255), -1)
-        
+
             if args.verbose:
                 print('{}'.format(time.time()-start))
         if args.record:
             out.write(frame)
         # Display the resulting image
         cv2.imshow('Video', frame)
- 
+
         frame_count += 1
 
         # Hit 'q' on the keyboard to quit!

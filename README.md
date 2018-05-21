@@ -40,26 +40,29 @@ The SVM was chosen since it is fast for both training and inference.
 
 ### Guide
 
-1. Download the source code 
-([`.zip`](https://github.com/wesleylp/CPE775/archive/v1.0.zip)
-or
-[`.tar.gz`](https://github.com/wesleylp/CPE775/archive/v1.0.tar.gz))
-and extract it;
-2. Open the terminal, go to the folder where you extracted the code and run the following command `conda env create -f requirements.yml`
-to generate the `face` environment
-3. Activate your environment by typing `source activate face`.
+1. Open the terminal;
+2. Download the source code by running the following command:
+`wget https://github.com/wesleylp/CPE775/archive/v1.0.tar.gz`;
+3. Extract the contents and then go inside the folder by typing `cd CPE775-1.0`;
+4. Create the `face` virtual environment by running 
+the following command `conda env create -f requirements.yml`;
+5. Activate your environment by typing `source activate face`;
 To deactivate the environment type in `source deactivate`.
-NOTE: Remember to always activate the environment before running the code.
-4. Download the [pre-trained models](https://github.com/wesleylp/CPE775/releases/download/v1.0/models.tgz) and extract them to the `models` folder;
-5. Follow the instructions in the [`notebooks`](https://github.com/wesleylp/CPE775/tree/master/notebooks) folder.
+NOTE: Remember to always activate the environment before running the code;
+6. Create the data folder:
+`mkdir data/pics`;
+7. Download the `pre-trained models` by typing `wget https://github.com/wesleylp/CPE775/releases/download/v1.0/models.tgz` and extract it;
+8. Follow the instructions in the [`notebooks`](https://github.com/wesleylp/CPE775/tree/master/notebooks) folder.
 
 ----
 ## Usage
 To use the real-time application:
 
-1. Crop 20 images of the person that will be recognized by doing [FILL THIS OUT...]
-2. Train the pre-trained SVM model by executing [FILL THIS OUT...]
-3. Run the application [FILL THIS OUT...]
+1. For each user, place a folder (named as each individual) containing at least 10 images of only this person in 
+`/data/pics/`.
+Example: If you want to recognize John and Mary Place a folder named John with at least 10 photos of him and another folder named Mary with at least 10 photos of her in `/data/pics/`.
+2. Train the SVM model by executing `python register.py`
+3. Run the application `python webcam.py`
 
 ----
 ## Change log

@@ -32,9 +32,6 @@ from cpe775.networks.openface import OpenFace
 from cpe775.networks.resnet import resnet18
 from cpe775.utils.img_utils import *
 
-import  pdb
-
-
 # Ignore warnings
 import warnings
 warnings.filterwarnings("ignore")

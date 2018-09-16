@@ -18,5 +18,7 @@ dependencies:
   - torchvision
   - opencv
   - pip:
+    - cmake==3.12.0
     - inflection
     - dlib
+

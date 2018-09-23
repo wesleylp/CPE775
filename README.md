@@ -42,7 +42,7 @@ The SVM was chosen since it is fast for both training and inference.
 
 1. Open the terminal;
 2. Download the source code by running the following command:
-`git clone https://github.com/wesleylp/CPE775`;
+`git clone https://github.com/wesleylp/CPE775.git`;
 3. Go inside the folder by typing `cd CPE775`;
 4. Create the `face` virtual environment by running
 the following command `conda env create -f requirements.yml`;
@@ -50,8 +50,8 @@ the following command `conda env create -f requirements.yml`;
 To deactivate the environment type in `source deactivate`.
 NOTE: Remember to always activate the environment before running the code;
 6. Create the data folder:
-`mkdir data/pics`;
-7. Download the `pre-trained models` by typing `wget https://github.com/wesleylp/CPE775/releases/download/v1.0/models.tgz` and extract it;
+`mkdir -p data/pics`;
+7. Download the `pre-trained models` by typing `wget https://github.com/wesleylp/CPE775/releases/download/v1.0/models.tgz` and extract it by running `tar -xvzf models.tgz`;
 8. Follow the instructions in the [`notebooks`](https://github.com/wesleylp/CPE775/tree/master/notebooks) folder.
 
 ----
@@ -68,6 +68,7 @@ Example: If you want to recognize John and Mary Place a folder named John with a
 ## Change log
 * 21-Dez-2017: Launch (class presentation)
 * 21-May-2018: Improved README.md
+* 23-Sep-2018: Trick to avoid segmentation fault when import matplotlib and scikit-image
 
 ----
 ## Thanks

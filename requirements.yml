@@ -1,6 +1,7 @@
 name: face
 channels:
   - defaults
+  - menpo
   - conda-forge
   - pytorch
 dependencies:
@@ -14,9 +15,9 @@ dependencies:
   - dlib
   - h5py
   - pandas
-  - pytorch
-  - torchvision
-  - opencv
+  - pytorch==0.3.1
+  - torchvision==0.2.0
+  - opencv==3.2.0
   - pip:
     - cmake==3.12.0
     - inflection

@@ -1,17 +1,15 @@
 import argparse
-import numpy as np
+# import numpy as np
 import time
 
 import torch
-import dlib
-import cv2
 
+import cv2
+import dlib
 from cpe775.align import AlignDlib
-from cpe775.networks.openface import OpenFace
-from cpe775.face_detector import FaceEmbedding
+# from cpe775.networks.openface import OpenFace
+from cpe775.face_detector import FaceClassify, FaceEmbedding, LandmarksDetector
 from cpe775.networks.resnet import resnet18
-from cpe775.face_detector import LandmarksDetector
-from cpe775.face_detector import FaceClassify
 
 if __name__ == '__main__':
 
@@ -32,8 +30,7 @@ if __name__ == '__main__':
     # loading the align class
     align = AlignDlib()
     # loading the embedding model
-    embedding = FaceEmbedding('models/openface/nn4.small2.v1.pth',
-                              cuda=args.cuda)
+    embedding = FaceEmbedding('models/openface/nn4.small2.v1.pth', cuda=args.cuda)
     # loading landmarks regressor
     net = resnet18(in_shape=(-1, 1, 224, 224), out_shape=(-1, 68, 2))
     landmarks_detector = LandmarksDetector(net, 'models/landmarks_detector.pth', cuda=args.cuda)
@@ -49,7 +46,7 @@ if __name__ == '__main__':
     # Define the codec and create VideoWriter object
     if args.record:
         fourcc = cv2.VideoWriter_fourcc(*'X264')
-        out = cv2.VideoWriter('record.mp4',fourcc, 24.0, (640,480))
+        out = cv2.VideoWriter('record.mp4', fourcc, 24.0, (640, 480))
 
     # Initialize some variables
     face_locations = []
@@ -105,14 +102,14 @@ if __name__ == '__main__':
 
         process_this_frame = not process_this_frame
 
-
         # Display the results
-        for (left, top, right, bottom), name, prob, landmarks in zip(face_locations, face_names, face_probas, face_landmarks):
+        for (left, top, right, bottom), name, prob, landmarks in zip(face_locations, face_names,
+                                                                     face_probas, face_landmarks):
             # Scale back up face locations since the frame we detected in was scaled to 1/4 size
-            top = int(top/args.scale) - 15
-            right = int(right/args.scale) + 15
-            bottom = int(bottom/args.scale) + 45
-            left = int(left/args.scale) - 15
+            top = int(top / args.scale) - 15
+            right = int(right / args.scale) + 15
+            bottom = int(bottom / args.scale) + 45
+            left = int(left / args.scale) - 15
 
             # Draw a box around the face
             cv2.rectangle(frame, (left, top), (right, bottom), (0, 0, 255), 2)
@@ -120,14 +117,15 @@ if __name__ == '__main__':
             # Draw a label with a name below the face
             cv2.rectangle(frame, (left, bottom - 35), (right, bottom), (0, 0, 255), cv2.FILLED)
             font = cv2.FONT_HERSHEY_DUPLEX
-            cv2.putText(frame, '{}, {:.2f}%'.format(name, prob*100), (left + 6, bottom - 6), font, 0.5, (255, 255, 255), 1)
+            cv2.putText(frame, '{}, {:.2f}%'.format(name, prob * 100), (left + 6, bottom - 6), font,
+                        0.5, (255, 255, 255), 1)
 
             # loop over the (x, y)-coordinates for the facial landmarks and draw them on the image
             for (x, y) in landmarks:
-                cv2.circle(frame, (int(x/args.scale), int(y/args.scale)), 1, (0, 0, 255), -1)
+                cv2.circle(frame, (int(x / args.scale), int(y / args.scale)), 1, (0, 0, 255), -1)
 
             if args.verbose:
-                print('{}'.format(time.time()-start))
+                print('{}'.format(time.time() - start))
         if args.record:
             out.write(frame)
         # Display the resulting image
@@ -139,7 +137,7 @@ if __name__ == '__main__':
         if cv2.waitKey(1) & 0xFF == ord('q'):
             break
 
-    print('Estimated fps: {}'.format(frame_count/(time.time()-global_start)))
+    print('Estimated fps: {}'.format(frame_count / (time.time() - global_start)))
     # Release handle to the webcam
     video_capture.release()
     cv2.destroyAllWindows()

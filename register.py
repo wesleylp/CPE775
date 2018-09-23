@@ -3,35 +3,32 @@ from __future__ import division, print_function
 import argparse
 import glob
 import os
-# import sys
-# Ignore warnings
 import warnings
 
-# import matplotlib.pyplot as plt
+import dlib
 import numpy as np
 import torch
-from skimage import io  # , transform
 # sklearn
-# from sklearn.cross_validation import cross_val_predict, cross_val_score
-# from sklearn.model_selection import StratifiedKFold, train_test_split
-# from sklearn.pipeline import Pipeline
-from sklearn.preprocessing import LabelEncoder  # , StandardScaler
-from sklearn.svm import SVC  # , LinearSVC
+from sklearn.preprocessing import LabelEncoder
+from sklearn.svm import SVC
 from sklearn.utils import shuffle
 
 import cv2
-import dlib
 from cpe775.align import AlignDlib
 from cpe775.face_detector import LandmarksDetector  # , FaceEmbedding
-# from cpe775.model import Model
 from cpe775.networks.openface import OpenFace
 from cpe775.networks.resnet import resnet18
 
-# from cpe775.utils.img_utils import *
-
-# from imgaug import augmenters as iaa
-
-# from collections import OrderedDict
+# from skimage import io
+# import matplotlib.pyplot as plt
+# importing these is casing segmentation fault
+# so, we changed the backend
+try:
+    import matplotlib as mpl
+    mpl.use('TkAgg')
+    from skimage import io
+except ImportError:
+    raise ImportError('fail to import matplot and or skimage: probably backend problem')
 
 warnings.filterwarnings("ignore")
 
@@ -68,7 +65,6 @@ if __name__ == '__main__':
 
         print('\nGetting face images from: {}'.format(person))
         file_ = glob.glob(people_folder + person + '/*')
-        face_not_found[person] = []
 
         for f in file_:
 
@@ -85,6 +81,11 @@ if __name__ == '__main__':
 
             # not use the image if the number of faces detected is different from 1
             if len(detected_faces) is not 1:
+
+                # initialize dict for 0 or more than 1 face
+                if person not in face_not_found.keys():
+                    face_not_found[person] = []
+
                 # saving for future reference
                 face_not_found[person].append((len(detected_faces), f))
                 continue
@@ -113,7 +114,6 @@ if __name__ == '__main__':
 
             cv2.imwrite(os.path.join(path, 'cropped', '{}{}'.format(name, ext)), thumbnail)
 
-    # TODO: better face the problem when the algorithm don't find only 1 face
     if any(face_not_found):
         print('\nuh-oh! We found some problems...')
         for k, v in face_not_found.items():
@@ -135,6 +135,7 @@ if __name__ == '__main__':
     ]
 
     X = np.stack([io.imread(f) for f in files], axis=0) / 255
+    # X = np.stack([cv2.cvtColor(cv2.imread(f), cv2.COLOR_BGR2RGB) for f in files], axis=0) / 255
     y = np.hstack([n * [person] for person in people])
     le = LabelEncoder()
     y = le.fit_transform(y)

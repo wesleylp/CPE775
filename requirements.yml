@@ -1,25 +1,33 @@
 name: face
 channels:
-  - defaults
-  - menpo
-  - conda-forge
   - pytorch
+  - conda-forge
+  - defaults
 dependencies:
-  - python==3.5.4
-  - numpy
-  - scipy
-  - scikit-learn
-  - scikit-image
-  - pillow
-  - matplotlib
-  - dlib
-  - h5py
-  - pandas
-  - pytorch==0.3.1
-  - torchvision==0.2.0
-  - opencv==3.2.0
+  - dlib=19.10=py36_blas_openblas_200
+  - h5py=2.8.0=py36h7eb728f_3
+  - imageio=2.3.0=py_1
+  - ipython=6.3.1=py35_0
+  - jupyter_client=5.2.3=py35_0
+  - jupyter_console=5.2.0=py35_0
+  - jupyter_core=4.4.0=py_0
+  - notebook=5.4.1=py35_0
+  - numpy=1.12.1=py36_blas_openblash24bf2e0_201
+  - opencv=3.4
+  - pandas=0.23.4=py36hf8a1672_0
+  - pillow=4.3.0=py36_2
+  - python=3.6.5=1
+  - scikit-image=0.13.1=py36_0
+  - scikit-learn=0.19.1=py36_blas_openblas_201
+  - scipy=0.19.1=py36_nomklh59deb5f_3
+  - torchvision=0.2.0=py36_0
+  - matplotlib=2.1.0=py36hba5de38_0
+  - scipy=0.19.1=py36_nomklh59deb5f_3
+  - pytorch=0.3.1=py36_cuda8.0.61_cudnn7.1.2_3
   - pip:
     - cmake==3.12.0
-    - inflection
-    - dlib
+    - dask==0.19.4
+    - inflection==0.3.1
+    - torch==0.3.1.post3
+
 

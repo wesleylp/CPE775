@@ -37,6 +37,7 @@ The SVM was chosen since it is fast for both training and inference.
 ### Requirements
 * Linux (might work with other Operational Systems, but it was not tested).
 * [Conda](https://conda.io/docs/user-guide/install/index.html): package, dependency and environment management.
+* Packages in [requirements.yml](https://github.com/wesleylp/CPE775/blob/refactoring-1/requirements.yml).
 
 ### Guide
 
@@ -52,7 +53,7 @@ NOTE: Remember to always activate the environment before running the code;
 6. Create the data folder:
 `mkdir -p data/pics`;
 7. Download the `pre-trained models` by typing `wget https://github.com/wesleylp/CPE775/releases/download/v1.0/models.tgz` and extract it by running `tar -xvzf models.tgz`;
-8. Follow the instructions in the [`notebooks`](https://github.com/wesleylp/CPE775/tree/master/notebooks) folder.
+8. Follow the instructions in the [`notebooks`](https://github.com/wesleylp/CPE775/tree/master/notebooks) folder to better understand the pipeline or go to `Usage` to see it working!
 
 ----
 ## Usage
@@ -68,6 +69,7 @@ Example: If you want to recognize John and Mary Place a folder named John with a
 ## Change log
 * 21-Dez-2017: Launch (class presentation)
 * 21-May-2018: Improved README.md
+* 20-Out-2018: Solved import issue
 * 23-Sep-2018: Trick to avoid segmentation fault when import matplotlib and scikit-image
 
 ----

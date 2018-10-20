@@ -2,17 +2,7 @@ import os
 
 import matplotlib.pyplot as plt
 import pandas as pd
-
-# from skimage import io
-# import matplotlib.pyplot as plt
-# importing these is casing segmentation fault
-# so, we changed the backend
-try:
-    import matplotlib as mpl
-    mpl.use('TkAgg')
-    from skimage import io
-except ImportError:
-    raise ImportError('fail to import matplot and or skimage: probably backend problem')
+from skimage import io
 
 
 def read_pts(paths, common_path=''):

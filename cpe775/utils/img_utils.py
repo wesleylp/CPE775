@@ -1,3 +1,4 @@
+import matplotlib.pyplot as plt
 import numpy as np
 import torchvision.transforms.functional as F
 from PIL import Image
@@ -5,24 +6,13 @@ from torchvision import utils
 
 import cv2
 
-# from skimage import io
-# import matplotlib.pyplot as plt
-# importing these is casing segmentation fault
-# so, we changed the backend
-try:
-    import matplotlib as mpl
-    mpl.use('TkAgg')
-    import matplotlib.pyplot as plt
-    from skimage import io
-except ImportError:
-    raise ImportError('fail to import matplot and or skimage: probably backend problem')
-
 
 def show_landmarks(image, landmarks, normalized=False):
     """Show image with landmarks"""
 
     if isinstance(image, str):
-        image = io.imread(image)
+        # image = io.imread(image)
+        image = cv2.cvtColor(cv2.imread(image), cv2.COLOR_BGR2RGB)
 
     w = h = 1
     if normalized:

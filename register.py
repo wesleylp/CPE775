@@ -5,7 +5,6 @@ import glob
 import os
 import warnings
 
-import dlib
 import numpy as np
 import torch
 # sklearn
@@ -14,21 +13,11 @@ from sklearn.svm import SVC
 from sklearn.utils import shuffle
 
 import cv2
+import dlib
 from cpe775.align import AlignDlib
 from cpe775.face_detector import LandmarksDetector  # , FaceEmbedding
 from cpe775.networks.openface import OpenFace
 from cpe775.networks.resnet import resnet18
-
-# from skimage import io
-# import matplotlib.pyplot as plt
-# importing these is casing segmentation fault
-# so, we changed the backend
-try:
-    import matplotlib as mpl
-    mpl.use('TkAgg')
-    from skimage import io
-except ImportError:
-    raise ImportError('fail to import matplot and or skimage: probably backend problem')
 
 warnings.filterwarnings("ignore")
 
@@ -73,6 +62,7 @@ if __name__ == '__main__':
 
             # Load the image
             image = cv2.imread(f)
+            image = cv2.cvtColor(cv2.imread(f), cv2.COLOR_BGR2RGB)
 
             # Run the HOG face detector on the image data
             detected_faces = face_detector(image, 1)
@@ -134,8 +124,8 @@ if __name__ == '__main__':
             glob.glob(people_folder + '{}/cropped/*'.format(person)), n, replace=False)
     ]
 
-    X = np.stack([io.imread(f) for f in files], axis=0) / 255
-    # X = np.stack([cv2.cvtColor(cv2.imread(f), cv2.COLOR_BGR2RGB) for f in files], axis=0) / 255
+    # X = np.stack([io.imread(f) for f in files], axis=0) / 255
+    X = np.stack([cv2.cvtColor(cv2.imread(f), cv2.COLOR_BGR2RGB) for f in files], axis=0) / 255
     y = np.hstack([n * [person] for person in people])
     le = LabelEncoder()
     y = le.fit_transform(y)

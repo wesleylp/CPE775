@@ -1,5 +1,9 @@
 import os
+
+import matplotlib.pyplot as plt
 import pandas as pd
+
+import cv2
 
 
 def read_pts(paths, common_path=''):
@@ -20,8 +24,10 @@ def read_pts(paths, common_path=''):
                     continue
 
                 keypoints.extend([float(l.strip()) for l in line.split()])
-
-            assert len(keypoints)/2 == n_points, '{} says {} points, but {} found'.format(path, n_points, len(keypoints))
+            assert len(keypoints) / 2 == n_points, '{} says {} points, but {} found'.format(
+                path, n_points, len(keypoints))
+            assert len(keypoints) / 2 == n_points, '{} says {} points, but {} found'.format(
+                path, n_points, len(keypoints))
 
             image_path = os.path.splitext(path)[0] + '.jpg'
             if not os.path.isfile(image_path):
@@ -36,11 +42,13 @@ def read_pts(paths, common_path=''):
 
     return pd.DataFrame(dataset)
 
+
 def show_landmarks(image, landmarks):
     """Show image with landmarks"""
 
     if isinstance(image, str):
-        image = io.imread(image)
+        # image = io.imread(image)
+        image = cv2.cvtColor(cv2.imread(image), cv2.COLOR_BGR2RGB)
 
     plt.imshow(image)
 

@@ -2,7 +2,8 @@ import os
 
 import matplotlib.pyplot as plt
 import pandas as pd
-from skimage import io
+
+import cv2
 
 
 def read_pts(paths, common_path=''):
@@ -46,8 +47,8 @@ def show_landmarks(image, landmarks):
     """Show image with landmarks"""
 
     if isinstance(image, str):
-        image = io.imread(image)
-        # image = cv2.cvtColor(cv2.imread(image), cv2.COLOR_BGR2RGB)
+        # image = io.imread(image)
+        image = cv2.cvtColor(cv2.imread(image), cv2.COLOR_BGR2RGB)
 
     plt.imshow(image)
 
